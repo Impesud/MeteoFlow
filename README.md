@@ -20,7 +20,7 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
 │   ├── cities.csv            # città (CSV)
 │   ├── provinces.jsonl       # province (JSONL)
 │   ├── regions.jsonl         # regioni (JSONL)
-│   └── data/output/          # File elaborati: aggregazioni (CSV/JSON)
+│   └── output/          # File elaborati: aggregazioni (CSV/JSON)
 ├── src/
 │   └── scripts/
 │       ├── extract.py
