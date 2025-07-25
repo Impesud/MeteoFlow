@@ -1,0 +1,17 @@
+# Docker ignore patterns
+
+# Exclude logs
+**/logs
+
+# Exclude output data
+**/data/output
+
+# Exclude Python virtual environments
+venv/
+
+# Exclude Git metadata
+.git/
+
+# Exclude Python cache and compiled files
+__pycache__/
+*.pyc

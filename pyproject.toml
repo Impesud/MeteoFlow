@@ -1,0 +1,80 @@
+[project]
+name = "MeteoFlow"
+version = "0.1.0"               
+description = "Pipeline ETL containerizzata interamente con **Docker** per l'elaborazione e l'analisi di dati meteorologici orari, giornalieri, settimanali e mensili per comuni, province e regioni italiane."
+authors = [
+  { name="Erick Jara", email="erick.jara@hotmail.it" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.bandit]
+exclude_dirs = [".git", ".venv", "venv", ".mypy_cache", ".pytest_cache", "tests"]
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+skip-string-normalization = false
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | venv
+  | \.mypy_cache
+  | \.pytest_cache
+)/
+'''
+[tool.flake8]
+ignore = ['E203', 'W503']
+max-line-length = 120
+count = true
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    ".mypy_cache",
+    ".pytest_cache",
+]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+skip = ["venv", ".venv", "__pycache__"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disable_error_code = ["call-overload"]
+exclude = 'venv|\.venv|\.mypy_cache'
+disallow_untyped_defs = false
+check_untyped_defs = false
+strict_optional = true
+warn_unused_ignores = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.optional-dependencies]
+test = [
+  "pytest>=7.0",
+  "black",
+  "flake8",
+  "isort",
+  "mypy",
+  "bandit",
+  "toml"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+exclude = ["data", "logs", "dags"]

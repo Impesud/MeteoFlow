@@ -1,0 +1,18 @@
+# Virtualenv
+.venv/
+venv/
+
+# Python
+.mypy_cache
+.pytest_cache
+__pycache__/
+*.py[cod]
+
+# Env
+.env
+
+# Logs
+logs/
+
+# Docker
+*.pid

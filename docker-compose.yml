@@ -1,0 +1,63 @@
+services:
+
+  postgres:
+    #image: postgres:15
+    image: postgis/postgis:15-3.4
+    container_name: meteo_postgres
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - meteo_network
+
+  airflow:
+    build:
+      context: .            
+      dockerfile: Dockerfile
+    container_name: meteo_airflow
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      # Core Airflow settings
+      AIRFLOW__CORE__EXECUTOR:             ${AIRFLOW__CORE__EXECUTOR}
+      AIRFLOW__CORE__LOAD_EXAMPLES:        ${AIRFLOW__CORE__LOAD_EXAMPLES}
+      AIRFLOW__CORE__DAGS_FOLDER:          ${AIRFLOW__CORE__DAGS_FOLDER}
+      AIRFLOW__LOGGING__LOG_FOLDER:        ${AIRFLOW__LOGGING__LOG_FOLDER}
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN:  ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+
+      # Custom meteo stack
+      METEO_INPUT_DIR:   ${METEO_INPUT_DIR}
+      METEO_OUTPUT_DIR:  ${METEO_OUTPUT_DIR}
+
+      # Per caricare gli script
+      PYTHONPATH:        ${PYTHONPATH}
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - ./src:/opt/airflow/src:ro
+      - ./tests:/opt/airflow/tests:ro
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+      - ./.env:/opt/airflow/.env:ro
+      - ./entrypoint.sh:/entrypoint.sh:ro
+
+    entrypoint: ["/entrypoint.sh"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - meteo_network
+
+networks:
+  meteo_network:
+    driver: bridge
+
+
+
+
+
