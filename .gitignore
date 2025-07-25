@@ -15,5 +15,9 @@ __pycache__/
 logs/*
 !logs/.gitkeep
 
+# Output (ignora i file ma non la cartella)
+data/output/*
+!data/output/.gitkeep
+
 # Docker
 *.pid
