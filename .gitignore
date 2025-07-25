@@ -11,8 +11,9 @@ __pycache__/
 # Env
 .env
 
-# Logs
-logs/
+# Logs (ignora i file ma non la cartella)
+logs/*
+!logs/.gitkeep
 
 # Docker
 *.pid

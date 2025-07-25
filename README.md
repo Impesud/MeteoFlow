@@ -68,7 +68,13 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
    Rinomina .env.example a .env
    ```
 
-3. **Avvia i container**:
+3. **Imposta** i permessi per entrypoint.sh:
+
+   ```bash
+   chmod +x entrypoint.sh
+   ```
+
+4. **Avvia i container**:
 
    ```bash
    docker-compose up --build
@@ -77,7 +83,7 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
    - **Postgres+PostGIS** sarà disponibile su `localhost:5432`
    - **Airflow Web UI** su `http://localhost:8080` (user/password: `meteoflow/meteoflow`)
 
-4. **Verifica e Avvio DAG**
+5. **Verifica e Avvio DAG**
 
    - In Airflow UI il DAG meteo_etl_dag dovrebbe comparire.
    - Il database deve contenere lo schema creato da `db/init.sql`.
