@@ -68,10 +68,11 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
    Rinomina .env.example a .env
    ```
 
-3. **Imposta** i permessi per entrypoint.sh:
+3. **Imposta** i permessi per entrypoint.sh e logs:
 
    ```bash
    chmod +x entrypoint.sh
+   chmod 777 logs
    ```
 
 4. **Avvia i container**:
