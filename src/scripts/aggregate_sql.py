@@ -11,7 +11,8 @@ Supporta i flag:
   --scope   city|prov|reg         (obbligatorio)
   --period  daily|weekly|monthly  (facoltativo)
 
-Ora per le regioni si unisce weather_city_hourly → cities → regions.
+Per le province si unisce weather_city_hourly → cities → provinces.
+Per le regioni si unisce weather_city_hourly → cities → regions.
 """
 
 import argparse
@@ -174,14 +175,14 @@ def build_agg_query(conf: dict) -> str:
             "JOIN cities    AS c ON c.codice_istat    = wh.istat_code\n"
             "JOIN provinces AS p ON p.province_istat_code = c.province_istat"
         )
-        key_col  = "p.province_istat_code"
+        key_col = "p.province_istat_code"
     else:  # reg
         # Join via cities → regions usando c.region_istat
         join_sql = (
             "JOIN cities  AS c ON c.codice_istat  = wh.istat_code\n"
             "JOIN regions AS r ON r.region_istat   = c.region_istat"
         )
-        key_col  = "r.region_istat"
+        key_col = "r.region_istat"
 
     # prepara SELECT & GROUP BY
     select_parts = [f"{key_col} AS {key_col.split('.')[-1]}"]
@@ -212,7 +213,6 @@ GROUP BY {group_sql};
 
 # ───────────────────────────────── Esecuzione ─────────────────────────────────
 def main():
-
     # ─────────────────────────────── CLI Args ────────────────────────────────────
     parser = argparse.ArgumentParser(description="Esegui aggregazioni SQL su meteo")
     parser.add_argument(
