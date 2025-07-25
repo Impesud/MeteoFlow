@@ -91,43 +91,43 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
 
 ## Avvio manuale
 
-# 1️⃣ Avvia i container (Postgres+PostGIS e Airflow)
+### 1️⃣ Avvia i container (Postgres+PostGIS e Airflow)
 docker-compose up -d --build
 
-# 2️⃣ Entra nel container Airflow
+### 2️⃣ Entra nel container Airflow
 docker-compose exec airflow bash
 
-# 3️⃣ Carica lo schema iniziale con init.sql
+### 3️⃣ Carica lo schema iniziale con init.sql
 psql -h postgres -U meteo_user -d meteo_db \
   -f /docker-entrypoint-initdb.d/init.sql
 
-# 4️⃣ Estrai e prepara i CSV orari
+### 4️⃣ Estrai e prepara i CSV orari
 python /opt/airflow/src/scripts/extract.py
 
-# 5️⃣ Carica le dimensioni (cities, provinces, regions)
+### 5️⃣ Carica le dimensioni (cities, provinces, regions)
 python /opt/airflow/src/scripts/load_dimensions.py
 
-# 6️⃣ Applica post_load.sql (geom e region_istat)
+### 6️⃣ Applica post_load.sql (geom e region_istat)
 psql -h postgres -U meteo_user -d meteo_db \
   -f /opt/airflow/dags/sql/post_load.sql
 
-# 7️⃣ (Opzionale) Verifica staging table e vincolo UNIQUE
+### 7️⃣ (Opzionale) Verifica staging table e vincolo UNIQUE
 psql -h postgres -U meteo_user -d meteo_db -c "\d weather_city_hourly_tmp"
 psql -h postgres -U meteo_user -d meteo_db -c "\d weather_city_hourly"
 
-# 8️⃣ Bulk‐load + UPSERT in weather_city_hourly
+### 8️⃣ Bulk‐load + UPSERT in weather_city_hourly
 python /opt/airflow/src/scripts/bulk_copy.py
 
-# 9️⃣ Aggregazioni per scope
+### 9️⃣ Aggregazioni per scope
 python /opt/airflow/src/scripts/aggregate_sql.py --scope city
 python /opt/airflow/src/scripts/aggregate_sql.py --scope prov
 python /opt/airflow/src/scripts/aggregate_sql.py --scope reg
 
-# 🔟 Verifica aggregazioni giornaliere città (esempio)
+### 🔟 Verifica aggregazioni giornaliere città (esempio)
 psql -h postgres -U meteo_user -d meteo_db \
   -c "SELECT date, COUNT(*) FROM weather_city_daily GROUP BY date ORDER BY date LIMIT 5;"
 
-# 1️⃣1️⃣ Esci dal container
+### 1️⃣1️⃣ Esci dal container
 exit
 
 ---
