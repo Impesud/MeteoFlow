@@ -40,7 +40,7 @@ WHERE ST_Contains(
 -- CREATE INDEX ON cities (region_istat);
 -- CREATE INDEX ON cities (province_istat);
 
--- 5) cleanup: rimuovi colonne WKT se non più servono
+-- 5) cleanup: rimuovi colonne WKT se non servono più 
 -- ALTER TABLE regions   DROP COLUMN region_boundaries;
 -- ALTER TABLE provinces DROP COLUMN province_boundaries;
 
