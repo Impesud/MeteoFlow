@@ -1,7 +1,7 @@
 # Docker ignore patterns
 
-# Exclude logs
-**/logs
+# Exclude everything under logs/, but keep the directory itself
+logs/**
 
 # Exclude output data
 **/data/output
