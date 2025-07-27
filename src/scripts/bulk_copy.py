@@ -1,6 +1,6 @@
 """
-Scarica i dati orari CSV generati da `extract.py` e li importa in blocco  
-nella tabella di destinazione Postgres usando COPY via psycopg2 con upsert  
+Scarica i dati orari CSV generati da `extract.py` e li importa in blocco
+nella tabella di destinazione Postgres usando COPY via psycopg2 con upsert
 per evitare duplicati.
 
 La configurazione viene letta da:
@@ -8,8 +8,8 @@ La configurazione viene letta da:
 - `METEO_CSV_PATH`
 - `METEO_TABLE`
 
-Il CSV di input può avere più colonne di quelle necessarie: qui ne estraiamo  
-solo quelle mappate in `HOURLY_COLUMNS` e le riscriviamo in un file temporaneo  
+Il CSV di input può avere più colonne di quelle necessarie: qui ne estraiamo
+solo quelle mappate in `HOURLY_COLUMNS` e le riscriviamo in un file temporaneo
 per poi usarlo con `COPY … STDIN` e infine fare l’upsert.
 
 """
@@ -78,12 +78,14 @@ HOURLY_COLUMNS = [
     "summary",
 ]
 
+
 # ────── HELPERS ──────────────────────────────────────────────────────────
 def get_raw_conn(dsn: str):
     """Restituisce una connessione psycopg2 a partire da DSN sqlalchemy-like."""
     if dsn.startswith("postgresql+psycopg2://"):
         dsn = dsn.replace("postgresql+psycopg2://", "postgresql://", 1)
     return psycopg2.connect(dsn)
+
 
 # ────── MAIN ─────────────────────────────────────────────────────────────
 def bulk_copy():
@@ -98,9 +100,7 @@ def bulk_copy():
         tmp_csv = Path(tmpdir) / "hourly_subset.csv"
         logging.info("▶️  Costruisco CSV temporaneo con colonne filtri…")
 
-        with CSV_PATH.open(newline="", encoding="utf-8") as src, \
-             tmp_csv.open("w", newline="", encoding="utf-8") as dst:
-
+        with CSV_PATH.open(newline="", encoding="utf-8") as src, tmp_csv.open("w", newline="", encoding="utf-8") as dst:
             reader = csv.DictReader(src)
             missing = [src_col for src_col in rev_map.values() if src_col not in reader.fieldnames]
             if missing:
@@ -152,6 +152,6 @@ def bulk_copy():
         finally:
             conn.close()
 
+
 if __name__ == "__main__":
     bulk_copy()
-

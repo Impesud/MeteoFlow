@@ -2,18 +2,23 @@ import pytest
 
 from src.scripts.aggregate_sql import AGG_CONFIG, build_agg_query, infer_period
 
+
 # --- infer_period tests ---
 def test_infer_period_suffix_daily():
     assert infer_period("weather_city_daily") == "daily"
 
+
 def test_infer_period_suffix_weekly():
     assert infer_period("weather_city_weekly") == "weekly"
+
 
 def test_infer_period_suffix_monthly():
     assert infer_period("weather_city_monthly") == "monthly"
 
+
 def test_infer_period_invalid():
     assert infer_period("weather_city_hourly") == ""
+
 
 # --- build_agg_query tests ---
 @pytest.mark.parametrize(
