@@ -18,9 +18,10 @@ repos:
     rev: v1.3.0
     hooks:
       - id: mypy
-        verbose: true
-        args: [--show-error-codes]
-        additional_dependencies: ['types-PyYAML']
+        additional_dependencies:
+          - types-requests
+          - types-PyYAML
+        args: [ "--explicit-package-bases", "src", "dags" ]
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
