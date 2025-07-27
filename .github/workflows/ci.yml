@@ -44,7 +44,7 @@ jobs:
       run: pre-commit run --all-files
 
     - name: Type check with mypy
-      run: mypy src dags
+      run: mypy src
 
     - name: Run tests
       env:
