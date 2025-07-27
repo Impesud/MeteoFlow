@@ -22,7 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger("load_dimensions")
 
 
-def main():
+def load_dimensions():
     logger.info("🔌 Inizio caricamento dimensioni")
 
     # Connection string da env
@@ -81,4 +81,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    load_dimensions()

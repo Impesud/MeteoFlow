@@ -20,17 +20,18 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Callable, TextIO, cast
 
-import orjson                    
+import orjson
 import pandas as pd
 from unidecode import unidecode
 from utils.data_utils import clean_dataframe, pad_istat_code
 
 # ───────────── CONFIG ─────────────
-INPUT_DIR   = os.getenv("METEO_INPUT_DIR")
+INPUT_DIR = os.getenv("METEO_INPUT_DIR")
 OUTPUT_PATH = os.getenv("METEO_CSV_PATH")
-CITIES_DIM  = os.getenv("METEO_CITIES_DIM")
-BATCH_SIZE  = int(os.getenv("EXTRACT_BATCH_SIZE", 200_000))
+CITIES_DIM = os.getenv("METEO_CITIES_DIM")
+BATCH_SIZE = int(os.getenv("EXTRACT_BATCH_SIZE", 200_000))
 
 # ───────────── LOGGING ─────────────
 logging.basicConfig(
@@ -108,11 +109,12 @@ def parse_and_yield(path: Path, istat: str):
     Legge un JSONL (o JSONL.GZ) e restituisce un generatore di dict
     già dotati di campo 'datetime' e 'istat_code'.
     """
-    open_fn = gzip.open if path.suffix == ".gz" else open
+
+    open_fn = cast(Callable[..., TextIO], gzip.open if path.suffix == ".gz" else open)
     with open_fn(path, "rt", encoding="utf-8") as f:
         for line in f:
             try:
-                obj = orjson.loads(line)   
+                obj = orjson.loads(line)
             except Exception as e:
                 log.error("Malformed JSON in %s: %s", path.name, e)
                 continue
@@ -140,22 +142,22 @@ def parse_and_yield(path: Path, istat: str):
                     yield flat
 
 
-def main():
+def extract():
     validate_env()
-    input_dir  = Path(INPUT_DIR)
+    input_dir = Path(INPUT_DIR)
     output_csv = Path(OUTPUT_PATH)
-    city_dim   = Path(CITIES_DIM)
+    city_dim = Path(CITIES_DIM)
 
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     if output_csv.exists():
         output_csv.unlink()
 
     city_map = load_city_mapping(city_dim)
-    total    = 0
-    batch    = []
+    total = 0
+    batch = []
 
     for path_str in sorted(glob.glob(str(input_dir / "*.jsonl*"))):
-        p    = Path(path_str)
+        p = Path(path_str)
         slug = p.stem.replace(".jsonl", "")
         istat = resolve_slug(slug, city_map)
         if not istat:
@@ -201,6 +203,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
-
-
+    extract()

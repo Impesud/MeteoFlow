@@ -212,7 +212,7 @@ GROUP BY {group_sql};
 
 
 # ───────────────────────────────── Esecuzione ─────────────────────────────────
-def main():
+def aggregate_sql():
     # ─────────────────────────────── CLI Args ────────────────────────────────────
     parser = argparse.ArgumentParser(description="Esegui aggregazioni SQL su meteo")
     parser.add_argument(
@@ -253,4 +253,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    aggregate_sql()
