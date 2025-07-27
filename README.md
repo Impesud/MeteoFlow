@@ -1,5 +1,24 @@
 # MeteoFlow
 
+<!-- CI/CD -->
+![CI](https://github.com/Impesud/MeteoFlow/actions/workflows/ci.yml/badge.svg)
+![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)
+
+<!-- Tecnologie -->
+![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)
+![Airflow](https://img.shields.io/badge/Apache%20Airflow-2.x-darkblue?logo=apacheairflow&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?logo=postgresql&logoColor=white)
+![PostGIS](https://img.shields.io/badge/PostGIS-3.3-green?logo=postgis&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-blue?logo=docker&logoColor=white)
+![ETL](https://img.shields.io/badge/ETL-Pipeline-orange?logo=databricks&logoColor=white)
+
+<!-- Qualità del codice -->
+![Black](https://img.shields.io/badge/Code%20Style-Black-black)
+![Isort](https://img.shields.io/badge/Imports-Isort-blue)
+![Mypy](https://img.shields.io/badge/Types-Mypy-informational)
+![Bandit](https://img.shields.io/badge/Security-Bandit-red)
+![Pytest](https://img.shields.io/badge/Tests-Pytest-green)
+
 **Piattaforma ETL containerizzata per dati meteorologici orari**\
 Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tutto con Apache Airflow.
 
@@ -100,43 +119,65 @@ Estrae, carica e aggrega dati meteo orari in PostgreSQL/PostGIS, orchestrando tu
 ## Avvio manuale
 
 ### 1️⃣ Avvia i container (Postgres+PostGIS e Airflow)
+```bash
 docker-compose up -d --build
+ ```
 
 ### 2️⃣ Entra nel container Airflow
+```bash
 docker-compose exec airflow bash
+ ```
 
 ### 3️⃣ Carica lo schema iniziale con init.sql
+```bash
 psql -h postgres -U meteo_user -d meteo_db \
   -f /docker-entrypoint-initdb.d/init.sql
+ ```
 
 ### 4️⃣ Estrai e prepara i CSV orari
+```bash
 python /opt/airflow/src/scripts/extract.py
+ ```
 
 ### 5️⃣ Carica le dimensioni (cities, provinces, regions)
+```bash
 python /opt/airflow/src/scripts/load_dimensions.py
+ ```
 
 ### 6️⃣ Applica post_load.sql (geom e region_istat)
+```bash
 psql -h postgres -U meteo_user -d meteo_db \
   -f /opt/airflow/dags/sql/post_load.sql
+ ```
 
 ### 7️⃣ (Opzionale) Verifica staging table e vincolo UNIQUE
+```bash
 psql -h postgres -U meteo_user -d meteo_db -c "\d weather_city_hourly_tmp"
 psql -h postgres -U meteo_user -d meteo_db -c "\d weather_city_hourly"
+ ```
 
 ### 8️⃣ Bulk‐load + UPSERT in weather_city_hourly
+```bash
 python /opt/airflow/src/scripts/bulk_copy.py
+ ```
 
 ### 9️⃣ Aggregazioni per scope
+```bash
 python /opt/airflow/src/scripts/aggregate_sql.py --scope city
 python /opt/airflow/src/scripts/aggregate_sql.py --scope prov
 python /opt/airflow/src/scripts/aggregate_sql.py --scope reg
+ ```
 
 ### 🔟 Verifica aggregazioni giornaliere città (esempio)
+```bash
 psql -h postgres -U meteo_user -d meteo_db \
   -c "SELECT date, COUNT(*) FROM weather_city_daily GROUP BY date ORDER BY date LIMIT 5;"
+ ```
 
 ### 1️⃣1️⃣ Esci dal container
+```bash
 exit
+ ```
 
 ---
 
