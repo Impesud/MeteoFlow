@@ -21,7 +21,7 @@ repos:
         additional_dependencies:
           - types-requests
           - types-PyYAML
-        args: [ "--explicit-package-bases", "--namespace-packages", "src" ]
+        args: [ "--explicit-package-bases", "src" ]
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
