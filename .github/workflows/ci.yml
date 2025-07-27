@@ -44,7 +44,8 @@ jobs:
       run: pre-commit run --all-files
 
     - name: Type check with mypy
-      run: mypy src
+      run: |
+        MYPYPATH=src mypy --disallow-untyped-defs --namespace-packages --explicit-package-bases src
 
     - name: Run tests
       env:
